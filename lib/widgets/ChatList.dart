@@ -39,8 +39,6 @@ class _ChatListState extends State<ChatList> {
 
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
