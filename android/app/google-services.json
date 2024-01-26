@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "488926832213",
+    "project_id": "holo-hive-os",
+    "storage_bucket": "holo-hive-os.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488926832213:android:ec1fcad53e1a17005096dc",
+        "android_client_info": {
+          "package_name": "com.globalgnome.holohive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzoTPnnWWyos54E8jnXZILF7sXjs6RWzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
