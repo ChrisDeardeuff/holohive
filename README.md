@@ -30,16 +30,15 @@ headline: String
 
 The chat 'app' allows the user to select a contact and see all messages between them and the contact
 
-Each chat (from sender A to receiver B) will get a node in RTDB. This node will hold the last time a message was sent/received by either person.
+Each chat (from sender A to receiver B) be a collection in Firestore. Each message will be a document with these fields:
 
-Each chat will also get a collection of documents in Firestore. These will be the users messages back and forth.
-
-
-When the user first opens a chat check if a RTDB node has a timestamp for it. If no node exists, do nothing as there are no messages to fetch.
-
-If the user sends a message, create a RTDB node and add the current timestamp and create a collection in the FS with that first message document.
-
-Now if the user opens a chat and there is a preexisting RTDB node, retrieve all documents from the corresponding a-b FS collection. While the user is in the chat, listen to RTDB timestamp and if it updates get all documents from the last timestamp to now.
+```
+UUID: String (uuid v4)
+date: Timestamp
+sender: String
+receiver: Timestamp
+message: String
+```
 
 A would be nice QOL improvement would be estimated response time based on light delay and the targets location.
 
