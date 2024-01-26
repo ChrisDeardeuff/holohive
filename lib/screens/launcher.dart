@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holohive/screens/ChatScreen.dart';
+import 'package:holohive/services/FirebaseServices.dart';
+import 'package:holohive/services/MessageService.dart';
 
 import '../widgets/TopBar.dart';
 import 'NewsFeed.dart';
@@ -13,10 +15,20 @@ class Launcher extends StatefulWidget {
 
 class _LauncherState extends State<Launcher> {
 
+  FirebaseServices fb = FirebaseServices();
+  MessageService ms = MessageService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ms.getListOfUsers();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Scaffold(body: SafeArea(child:Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -370,6 +382,6 @@ class _LauncherState extends State<Launcher> {
           flex: 1,
         ),
       ],
-    );
+    )));
   }
 }

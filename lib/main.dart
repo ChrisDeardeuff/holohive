@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:holohive/screens/LoginScreen.dart';
 import 'package:holohive/screens/launcher.dart';
 import 'package:holohive/services/FirebaseServices.dart';
 import 'package:holohive/services/MessageService.dart';
+import 'package:holohive/widgets/Login.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -89,11 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     print("Starting");
     fb.initializeFB();
-    ms.getListOfUsers();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SafeArea(child: Launcher()));
+    return const Scaffold(body: SafeArea(child: Center(child: LoginScreen())));
   }
 }

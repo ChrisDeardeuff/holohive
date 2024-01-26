@@ -5,17 +5,17 @@ import 'package:holohive/models/NewsPost.dart';
 import 'package:holohive/services/FirebaseServices.dart';
 import 'package:uuid/uuid.dart';
 
-import '../models/User.dart';
+import '../models/UserModel.dart';
 
 class MessageService{
 
   static final MessageService _singleton = MessageService._internal();
   FirebaseServices fb = FirebaseServices();
 
-  late String _selectedUser = 'Cane Randal';
-  final String _currentUser = 'DM';
+  late String _selectedUser = '';
+  late String _currentUser;
 
-  List<User> users = [];
+  List<UserModel> users = [];
 
   factory MessageService() {
     return _singleton;
@@ -23,11 +23,12 @@ class MessageService{
 
   MessageService._internal();
 
-  Future<List<User>> getListOfUsers() async{
+  Future<List<UserModel>> getListOfUsers() async{
     if(users.isEmpty){
 
       users = await fb.getAllUsers();
       selectedUser = users.first.name;
+      currentUser = fb.getCurrentUser();
     }
     return users;
   }
@@ -53,16 +54,19 @@ class MessageService{
     }
   }
   String get currentUser => _currentUser;
+
   set currentUser(String currentUser){
     if(users.isNotEmpty){
-
       for(var user in users){
         if(user.name == currentUser){
-          _selectedUser = currentUser;
+          _currentUser = currentUser;
+          return;
         }
       }
-    }else{
       print("Contact Not Found ${currentUser} (currentUser)");
+    }else{
+      print("Users is Empty");
+
     }
   }
 }
