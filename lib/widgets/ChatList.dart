@@ -62,6 +62,10 @@ class _ChatListState extends State<ChatList> {
                     .map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
+
+                      if(data.isEmpty){
+                        return const Text("No messages with contact.");
+                      }
                       return MessageCard(
                           sender: data['sender'],
                           receiver: data['receiver'],

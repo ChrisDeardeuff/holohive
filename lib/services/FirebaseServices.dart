@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:holohive/models/Message.dart';
 import 'package:holohive/models/NewsPost.dart';
-import 'package:uuid/uuid.dart';
+import 'package:holohive/models/UserModel.dart';
 
 import '../firebase_options.dart';
-import '../models/User.dart';
+
 
 class FirebaseServices {
   static final FirebaseServices _singleton = FirebaseServices._internal();
@@ -27,6 +27,26 @@ class FirebaseServices {
     );
 
     db = FirebaseFirestore.instance;
+  }
+
+  String getCurrentUser() {
+    String user = FirebaseAuth.instance.currentUser!.displayName.toString();
+    print("getting user: $user");
+    return user;
+  }
+
+  signIn(String username, String password) async{
+
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: username,
+          password: password
+      );
+
+    } on FirebaseAuthException catch (e) {
+      rethrow;
+    }
+
   }
 
   Future<List<Message>> getMessages(String current, String selected) async {
@@ -87,8 +107,8 @@ class FirebaseServices {
     });
   }
 
-  Future<List<User>> getAllUsers() async {
-    List<User> users = [];
+  Future<List<UserModel>> getAllUsers() async {
+    List<UserModel> users = [];
 
     final news = db.collection("users");
 
@@ -97,7 +117,7 @@ class FirebaseServices {
         print("Successfully completed");
         for (var docSnapshot in querySnapshot.docs) {
           print("adding user");
-          users.add(User(name: docSnapshot.data()['name']));
+          users.add(UserModel(name: docSnapshot.data()['name']));
         }
       },
       onError: (e) => print("Error completing: $e"),

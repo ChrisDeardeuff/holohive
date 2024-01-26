@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:holohive/services/MessageService.dart';
 import 'package:holohive/widgets/ChatList.dart';
 
-import '../models/User.dart';
+import '../models/UserModel.dart';
 import '../widgets/KeyboardArea.dart';
 import '../widgets/TopBar.dart';
 
@@ -20,14 +20,14 @@ class _ChatScreenState extends State<ChatScreen> {
   String lUser = '';
   @override
   void initState() {
-    ms.currentUser = "Cane Randal";
+    print("Current user: ${ms.currentUser}");
     super.initState();
   }
 
   Future<List<String>> initContacts() async {
     List<String> contactLists = [];
     await ms.getListOfUsers();
-    for (User user in await ms.getListOfUsers()) {
+    for (UserModel user in await ms.getListOfUsers()) {
       contactLists.add(user.name);
     }
 
