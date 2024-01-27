@@ -5,39 +5,21 @@ import 'package:holohive/services/MessageService.dart';
 
 import 'MessageCard.dart';
 
-class ChatList extends StatefulWidget {
-  const ChatList({super.key, required this.user});
+class ChatList extends StatelessWidget{
 
-  final String user;
+  const ChatList({super.key, required this.messageStream});
 
-  @override
-  State<ChatList> createState() => _ChatListState();
-}
-
-class _ChatListState extends State<ChatList> {
-  FirebaseServices fb = FirebaseServices();
-  MessageService ms = MessageService();
-
-  ScrollController _scrollController = ScrollController();
-  Stream<QuerySnapshot> _messageStream = Stream.empty();
-
-  @override
-  void initState() {
-    super.initState();
-    print('getting new listener for: ${ms.currentUser} and ${ms.selectedUser}');
-    _messageStream = fb.getListener(ms.currentUser, ms.selectedUser);
-
-    Future.delayed(const Duration(milliseconds: 100), ()
-    {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        // Adjust duration as needed
-        curve: Curves.easeOut,
-      );
-    });
-
-  }
+  // ScrollController _scrollController = ScrollController();
+  // Future.delayed(const Duration(milliseconds: 100), ()
+  // {
+  // _scrollController.animateTo(
+  // _scrollController.position.maxScrollExtent,
+  // duration: const Duration(milliseconds: 300),
+  // // Adjust duration as needed
+  // curve: Curves.easeOut,
+  // );
+  // });
+  final Stream<QuerySnapshot> messageStream;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +27,7 @@ class _ChatListState extends State<ChatList> {
       children: [
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-            stream: _messageStream,
+            stream: messageStream,
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
@@ -55,17 +37,18 @@ class _ChatListState extends State<ChatList> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
+              print("yes ${snapshot.data!.docs.toString()}");
+              if(snapshot.data!.docs.isEmpty){
+                return const Text("No messages with contact.");
+              }
 
               return ListView(
-                controller: _scrollController,
+                //controller: _scrollController,
                 children: snapshot.data!.docs
                     .map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
 
-                      if(data.isEmpty){
-                        return const Text("No messages with contact.");
-                      }
                       return MessageCard(
                           sender: data['sender'],
                           receiver: data['receiver'],

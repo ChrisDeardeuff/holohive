@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:holohive/services/FirebaseServices.dart';
 import 'package:holohive/services/MessageService.dart';
 import 'package:holohive/widgets/ChatList.dart';
 
@@ -15,9 +16,10 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   MessageService ms = MessageService();
+  FirebaseServices fb = FirebaseServices();
 
   List<String> contactLists = [];
-  String lUser = '';
+
   @override
   void initState() {
     print("Current user: ${ms.currentUser}");
@@ -30,6 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
     for (UserModel user in await ms.getListOfUsers()) {
       contactLists.add(user.name);
     }
+
+    fb.getListener(ms.currentUser, ms.selectedUser);
 
     return contactLists;
   }
@@ -47,7 +51,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     future: initContacts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
-                        print("SNAPSHOT DONE: ${snapshot.data}");
                         final List<String> contactNames = snapshot.data as List<String>;
                         return Row(
                           children: [
@@ -66,11 +69,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 }).toList(),
                                 onChanged: (newValue) {
                                   if (newValue != null) {
-                                    print('Update');
-                                    ms.selectedUser = newValue as String;
                                     setState((){
+                                      ms.selectedUser = newValue;
                                       print('Update State');
-                                      lUser = newValue;
+                                      print('Selected User is: ${ms.selectedUser}');
                                     });
                                   }
                                 }),
@@ -86,7 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Divider(
                 color: Theme.of(context).colorScheme.primary,
               ),
-              Expanded(child: ChatList(user: lUser)),
+              Expanded(child: ChatList(messageStream: fb.getListener(ms.currentUser, ms.selectedUser))),
               Divider(
                 color: Theme.of(context).colorScheme.primary,
               ),

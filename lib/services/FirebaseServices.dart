@@ -49,46 +49,15 @@ class FirebaseServices {
 
   }
 
-  Future<List<Message>> getMessages(String current, String selected) async {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getListener(String current, String selected) {
+
     // Sort the names alphabetically to ensure consistent order.
     final sortedNames = [current, selected]..sort();
     // Join the sorted names using an underscore.
     String path = sortedNames.join('_');
-
-    List<Message> ms = [];
-    final snapshot = await FirebaseFirestore.instance
-        .collection(path)
-        .get()
-        .then((querySnapshot) => {
-              print(
-                  'Received all messages: ${querySnapshot.docs.length} documents'),
-              for (var docSnap in querySnapshot.docs)
-                {
-                  ms.add(Message(
-                      sender: docSnap.data()['sender'],
-                      receiver: docSnap.data()['receiver'],
-                      date: docSnap.data()['date'] as Timestamp,
-                      message: docSnap.data()['message']))
-                }
-            });
-
-    return ms;
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getListener(
-      String current, String selected) {
-    // Sort the names alphabetically to ensure consistent order.
-    final sortedNames = [current, selected]..sort();
-    // Join the sorted names using an underscore.
-    String path = sortedNames.join('_');
+    print('getting listeners in FBService for $path');
 
     return db.collection(path).orderBy('date').snapshots();
-  }
-
-  getListener2(String path) {
-    FirebaseFirestore.instance.collection(path).snapshots().map((snapshot) {
-      print('Received snapshot: ${snapshot.docs.length} documents (listener2)');
-    });
   }
 
   sendMessage(Message message) async {
